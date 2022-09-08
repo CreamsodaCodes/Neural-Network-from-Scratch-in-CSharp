@@ -21,8 +21,9 @@ namespace app
 		return inputs;
 	}
 
-    int Classify(double[] inputs){
+    public int Classify(double[] inputs){
         double[] outputs = CalculateOutputs(inputs);
+        System.Console.WriteLine(MaxValueIndex(outputs));
         return MaxValueIndex(outputs);
     }
 
@@ -39,7 +40,7 @@ namespace app
     double cost(DataPoint[] data){
         double totalCost = 0;
         foreach (DataPoint dataPoint in data){
-            totalCost += Cost(dataPoint);
+            totalCost += cost(dataPoint);
         }
         return totalCost/data.Length;
     }

@@ -4,6 +4,8 @@ namespace app
 {
     class Program
     {
+        static int[] LayerSize = {2,4,2};
+        static double[] Test = {4,2};
         static void Main(string[] args)
         {
             System.Random rng = new System.Random();
@@ -25,6 +27,10 @@ namespace app
                 inputData[1] = randomNumber2;
                 completeData[i] = new DataPoint(inputData,0,2);
             }
+
+            NN firstNetwork = new NN(LayerSize);
+            firstNetwork.Learn(completeData,1);
+            firstNetwork.Classify(Test);
 
 
         }

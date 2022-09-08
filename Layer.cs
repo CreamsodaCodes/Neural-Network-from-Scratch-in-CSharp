@@ -11,6 +11,7 @@ namespace app
         int numNodesIn; int numNodesOut;
         double[,] weights;
         double[] bias;
+        double[] inputs;
 
         public Layer(int numNodesIn, int numNodesOut){
             this.numNodesIn = numNodesIn;
@@ -25,7 +26,7 @@ namespace app
 
         public double[] calculateOutputs(double[] inputs){
             double[] weightedInputs = new double[numNodesOut];
-
+            this.inputs = inputs;
             for(int nodeOut = 0; nodeOut<numNodesOut;nodeOut++){
                 double weightedInput = bias[nodeOut];
                 for(int nodeIn=0; nodeIn<numNodesIn;nodeIn++){
@@ -42,8 +43,8 @@ namespace app
             double[] nodeValues = new double[expectedOutputs.Length];
 
             for(int i = 0;i<nodeValues.Length;i++){
-                double costDerivative = NodeCostDerivative(activations[i], expectedOutputs[i]);
-                double activationDerivative = ActivationDerivative(weightedInputs[i]);
+                double costDerivative = NodeCostDerivative(safeweightedInputs[i], expectedOutputs[i]);
+                double activationDerivative = ActivationDerivative(safeweightedInputs[i]);
                 nodeValues[i] = activationDerivative*costDerivative;
             }
             return nodeValues;
@@ -51,19 +52,19 @@ namespace app
 
 
 
-        double activationFunction(double weightedInput){
-            return 1/(1+Exp(-weightedInput));
+        public double activationFunction(double weightedInput){
+            return 1/(1+Math.Exp(-weightedInput));
         }
         public double ActivationDerivative(double weightedInput){
-            double activation = activationFunction(weightedInput);
+            double activation = weightedInput;
             return activation*(1-activation);
         }
 
-        double NodeCost(double outputActivation, double expectedOutput){
+        public double NodeCost(double outputActivation, double expectedOutput){
             double error = outputActivation-expectedOutput;
             return error * error;
         }
-        double NodeCostDerivative(double outputActivation, double expectedOutput){
+        public double NodeCostDerivative(double outputActivation, double expectedOutput){
             return 2*(outputActivation-expectedOutput);
         }
 
@@ -71,10 +72,10 @@ namespace app
             for(int nodeOut=0;nodeOut<numNodesOut;nodeOut++){
 
                 for(int nodeIn=0;nodeIn<numNodesIn;nodeIn++){
-                    //inputs noch nirgends gespeichert?!?
+                    //inputs noch nirgends gespeichert?!? erledigt
                     double derivativeCostWrtWeight = inputs[nodeIn] * nodeValues[nodeOut];
                     //auch nicht fespeichert?!
-                    costGradientW[nodeIn, nodeOut] += derivativeCostWrtBias;
+                    costGradientW[nodeIn, nodeOut] += derivativeCostWrtWeight;
                 }
             
             double derivativeCostWrtBias = 1*nodeValues[nodeOut];
@@ -86,7 +87,7 @@ namespace app
         public void ApplyGradients(double learnRate)
         {
             for(int nodeOut=0;nodeOut<numNodesOut;nodeOut++){
-                biases[nodeOut] -= costGradientB[nodeOut]*learnRate;
+                bias[nodeOut] -= costGradientB[nodeOut]*learnRate;
                 for(int nodeIn=0;nodeIn<numNodesIn;nodeIn++){
                     weights[nodeIn,nodeOut] -= costGradientW[nodeIn, nodeOut]* learnRate;
                 }
@@ -115,14 +116,14 @@ namespace app
             for(int nodeIn=0;nodeIn<numNodesIn;nodeIn++){
                 for(int nodeOut=0;nodeOut<numNodesOut;nodeOut++){
                     double randomValue = rng.NextDouble() * 2 - 1;
-                    weights[nodeIn,nodeOut]= randomValue / Sqrt(numNodesIn);
+                    weights[nodeIn,nodeOut]= randomValue / Math.Sqrt(numNodesIn);
                 }
             }
         }
 
         public void ClearGradient(){
-            Array.Clear(costGradientW, 0, myArray.Length);
-            Array.Clear(costGradientB, 0, myArray.Length);
+            Array.Clear(costGradientW, 0, costGradientW.Length);
+            Array.Clear(costGradientB, 0, costGradientB.Length);
         }
         
 
