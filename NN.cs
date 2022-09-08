@@ -10,6 +10,7 @@ namespace app
             for(int i=0;i<layers.Length;i++){
                 layers[i] = new Layer(layerSize[i],layerSize[i+1]);
             }
+            
         }
 
     public double[] CalculateOutputs(double[] inputs)
@@ -23,7 +24,10 @@ namespace app
 
     public int Classify(double[] inputs){
         double[] outputs = CalculateOutputs(inputs);
-        System.Console.WriteLine(MaxValueIndex(outputs));
+        
+        /*System.Console.WriteLine(outputs[0]);
+        System.Console.WriteLine(outputs[1]);*/
+        Console.WriteLine(MaxValueIndex(outputs));
         return MaxValueIndex(outputs);
     }
 
@@ -35,13 +39,15 @@ namespace app
         for(int nodeOut=0;nodeOut<outputs.Length;nodeOut++){
             cost += outputLayer.NodeCost(outputs[nodeOut],dataPoint.expectedOutputs[nodeOut]);
         }
+        
         return cost;
     }
-    double cost(DataPoint[] data){
+    public double cost(DataPoint[] data){
         double totalCost = 0;
         foreach (DataPoint dataPoint in data){
             totalCost += cost(dataPoint);
         }
+        System.Console.WriteLine(totalCost/data.Length);
         return totalCost/data.Length;
     }
 
@@ -85,11 +91,13 @@ namespace app
         ApplyAllGradients(learnRate / trainingBatch.Length);
         //wo??
         ClearAllGradients();
+        
     }
 
     public void ApplyAllGradients(double learnRate){
         foreach (Layer layer in layers)
         {
+            
             layer.ApplyGradients(learnRate);
         }
 

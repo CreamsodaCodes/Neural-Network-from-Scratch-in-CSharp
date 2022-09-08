@@ -8,10 +8,10 @@ namespace app
 	    double[,] costGradientW;
 	    double[] costGradientB;
         double[] safeweightedInputs;
-        int numNodesIn; int numNodesOut;
+        public int numNodesIn; int numNodesOut;
         double[,] weights;
         double[] bias;
-        double[] inputs;
+        public double[] inputs;
 
         public Layer(int numNodesIn, int numNodesOut){
             this.numNodesIn = numNodesIn;
@@ -31,8 +31,11 @@ namespace app
                 double weightedInput = bias[nodeOut];
                 for(int nodeIn=0; nodeIn<numNodesIn;nodeIn++){
                     weightedInput += inputs[nodeIn] * weights[nodeIn,nodeOut];
+                    
                 }
+                
                 weightedInputs[nodeOut] = activationFunction(weightedInput);
+                //Console.WriteLine(weightedInputs[nodeOut]);
             }
             safeweightedInputs = weightedInputs;
             return weightedInputs;
@@ -86,6 +89,7 @@ namespace app
 
         public void ApplyGradients(double learnRate)
         {
+            //Console.WriteLine("layer.inputs[0]");
             for(int nodeOut=0;nodeOut<numNodesOut;nodeOut++){
                 bias[nodeOut] -= costGradientB[nodeOut]*learnRate;
                 for(int nodeIn=0;nodeIn<numNodesIn;nodeIn++){
@@ -124,6 +128,7 @@ namespace app
         public void ClearGradient(){
             Array.Clear(costGradientW, 0, costGradientW.Length);
             Array.Clear(costGradientB, 0, costGradientB.Length);
+            //Console.WriteLine(costGradientW[0,1]);
         }
         
 
