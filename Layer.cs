@@ -25,6 +25,10 @@ namespace app
         }
 
         public double[] calculateOutputs(double[] inputs){
+            
+            if(double.IsNaN(inputs[0])){
+                Environment.Exit(1);
+            }
             double[] weightedInputs = new double[numNodesOut];
             this.inputs = inputs;
             for(int nodeOut = 0; nodeOut<numNodesOut;nodeOut++){
@@ -35,7 +39,7 @@ namespace app
                 }
                 
                 weightedInputs[nodeOut] = activationFunction(weightedInput);
-                //Console.WriteLine(weightedInputs[nodeOut]);
+                
             }
             safeweightedInputs = weightedInputs;
             return weightedInputs;
@@ -89,7 +93,7 @@ namespace app
 
         public void ApplyGradients(double learnRate)
         {
-            //Console.WriteLine("layer.inputs[0]");
+            
             for(int nodeOut=0;nodeOut<numNodesOut;nodeOut++){
                 bias[nodeOut] -= costGradientB[nodeOut]*learnRate;
                 for(int nodeIn=0;nodeIn<numNodesIn;nodeIn++){

@@ -22,6 +22,19 @@ namespace app
 		return inputs;
 	}
 
+    public void classifyAll(DataPoint[] data){
+        int i = 0;
+        foreach (DataPoint dataPoint in data){
+            if((Classify(dataPoint.inputs)==(int)dataPoint.label)){
+                Console.WriteLine("Nice");
+                i++;
+            }
+        }
+        
+        Console.WriteLine(i);
+        Console.WriteLine(data.Length);
+    }
+
     public int Classify(double[] inputs){
         double[] outputs = CalculateOutputs(inputs);
         
@@ -37,6 +50,7 @@ namespace app
         double cost=0;
 
         for(int nodeOut=0;nodeOut<outputs.Length;nodeOut++){
+        
             cost += outputLayer.NodeCost(outputs[nodeOut],dataPoint.expectedOutputs[nodeOut]);
         }
         
@@ -46,8 +60,9 @@ namespace app
         double totalCost = 0;
         foreach (DataPoint dataPoint in data){
             totalCost += cost(dataPoint);
+            
         }
-        System.Console.WriteLine(totalCost/data.Length);
+        
         return totalCost/data.Length;
     }
 
@@ -68,12 +83,15 @@ namespace app
 	}
 
     void UpdateAllGradients(DataPoint dataPoint){
+        
         CalculateOutputs(dataPoint.inputs);
-
+        
         Layer outputLayer = layers[layers.Length-1];
+        
         double[] nodeValues = outputLayer.CalculateOutputLayerNodeValues(dataPoint.expectedOutputs);
+        
         outputLayer.UpdateGradients(nodeValues);
-
+        
 
         for(int hindenLayerIndex= layers.Length-2; hindenLayerIndex>=0;hindenLayerIndex--){
         Layer hiddenLayer = layers[hindenLayerIndex];
@@ -85,8 +103,10 @@ namespace app
     public void Learn(DataPoint[] trainingBatch, double learnRate){
         foreach (DataPoint dataPoint in trainingBatch)
         {
+            
             UpdateAllGradients(dataPoint);
         }
+        
         //wo?
         ApplyAllGradients(learnRate / trainingBatch.Length);
         //wo??
